@@ -7,9 +7,9 @@ import {
   StyledInput,
   StyledButton,
 } from './ContactForm.styled';
-import { getContacts } from '../../redux/selector';
+import { getContacts } from '../../redux/contacts/selector';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContactsThunk } from '../../redux/operations';
+import { addContactsThunk } from '../../redux/contacts/operations';
 
 const ContactForm = () => {
   const contacts = useSelector(getContacts);

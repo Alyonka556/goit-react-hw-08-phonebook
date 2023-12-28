@@ -3,20 +3,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 import { refreshThunk } from '../redux/auth/operations';
 import { selectIsRefresh } from '../redux/auth/selector';
-import { StyledContainer, StyledContent, StyledTitle } from './App.styled';
+import { StyledContainer, StyledContent } from './App.styled';
 import Header from './Header';
 import NotFound from 'pages/NotFound';
 import PrivateRoute from '../routesConfig/PrivateRoute';
 import PublicRoute from '../routesConfig/PublicRoute';
 import Loader from './Loader';
 import { Layout } from './Layout';
+// import Contacts from '../pages/Contacts';
 
 const Home = lazy(() => import('../pages/Home'));
 const Register = lazy(() => import('../pages/Register'));
 const Login = lazy(() => import('../pages/Login'));
-const ContactForm = lazy(() => import('./ContactForm/ContactForm'));
-const ContactList = lazy(() => import('./ContactList/ContactList'));
-const Filter = lazy(() => import('./Filter/Filter.jsx'));
+const Contacts = lazy(() => import('../pages/Contacts'));
 
 export const App = () => {
   const dispatch = useDispatch();
@@ -41,13 +40,7 @@ export const App = () => {
               path="/contacts"
               element={
                 <PrivateRoute>
-                  <>
-                    <StyledTitle>Phonebook</StyledTitle>
-                    <ContactForm />
-                    <StyledTitle>Contacts</StyledTitle>
-                    <Filter />
-                    <ContactList />
-                  </>
+                  <Contacts />
                 </PrivateRoute>
               }
             />

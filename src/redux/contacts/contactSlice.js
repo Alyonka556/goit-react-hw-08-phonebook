@@ -4,7 +4,7 @@ import {
   deleteContactThunk,
   fetchContactsThunk,
 } from './operations';
-import { logoutThunk } from './auth/operations';
+import { logoutThunk } from '../auth/operations';
 
 const initialState = { value: [], isLoading: false, error: null };
 

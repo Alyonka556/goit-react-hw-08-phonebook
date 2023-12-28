@@ -3,7 +3,7 @@
 // import axios from 'axios';
 
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { api } from '../configAxios/api';
+import { api } from '../../configAxios/api';
 
 // axios.defaults.baseURL = 'https://6584512e4d1ee97c6bcf791c.mockapi.io';
 

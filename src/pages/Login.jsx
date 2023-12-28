@@ -4,11 +4,10 @@ import { loginThunk } from '../redux/auth/operations';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+
 import { toast } from 'react-toastify';
 
 const Login = () => {
-  const navigate = useNavigate();
   const { register, handleSubmit } = useForm({
     defaultValues: {
       email: 'vasyatest@mail.com',
@@ -21,7 +20,6 @@ const Login = () => {
     dispatch(loginThunk(data))
       .unwrap()
       .then(res => {
-        navigate('/contacts');
         toast.success(`Hello ${res.user.name}`);
       })
       .catch(() => {
