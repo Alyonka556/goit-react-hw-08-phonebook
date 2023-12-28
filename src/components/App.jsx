@@ -1,75 +1,72 @@
-import { ContactForm } from './ContactForm/ContactForm';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Route, Routes } from 'react-router-dom';
+import { refreshThunk } from '../redux/auth/operations';
+import { selectIsRefresh } from '../redux/auth/selector';
+import { StyledContainer, StyledContent, StyledTitle } from './App.styled';
+import ContactForm from './ContactForm/ContactForm';
 import ContactList from './ContactList/ContactList';
 import Filter from './Filter/Filter.jsx';
-
-import { StyledContainer, StyledTitle } from './App.styled';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  SelectError,
-  SelectLoading,
-  getContacts,
-  getFilter,
-} from '../redux/selector.js';
-import { addFilter } from '../redux/filterSlice';
-
-import { useEffect } from 'react';
-import {
-  addContactsThunk,
-  deleteContactThunk,
-  fetchContactsThunk,
-} from '../redux/operations';
+import Header from './Header';
+import NotFound from 'pages/NotFound';
+import Register from '../pages/Register';
+import Login from '../pages/Login';
+import PrivateRoute from '../routesConfig/PrivateRoute';
+import PublicRoute from '../routesConfig/PublicRoute';
+import Loader from './Loader';
 
 export const App = () => {
-  const contacts = useSelector(getContacts);
-  const filter = useSelector(getFilter);
-  const loading = useSelector(SelectLoading);
-  const error = useSelector(SelectError);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchContactsThunk());
+    dispatch(refreshThunk());
   }, [dispatch]);
 
-  const handleChange = value => {
-    dispatch(addFilter(value));
-  };
+  const isRefresh = useSelector(selectIsRefresh);
 
-  const handleSubmit = ({ name, phone }) => {
-    const contactExists = contacts.some(contact => contact.name === name);
+  return isRefresh ? (
+    <Loader />
+  ) : (
+    <StyledContent>
+      <Header />
+      <StyledContainer>
+        <Routes>
+          <Route path="/" element={<StyledTitle>Homepage</StyledTitle>} />
 
-    if (contactExists) {
-      alert(`${name} is already in contacts.`);
-    } else {
-      dispatch(addContactsThunk({ name, phone }));
-    }
-  };
+          <Route
+            path="/contacts"
+            element={
+              <PrivateRoute>
+                <>
+                  <StyledTitle>Phonebook</StyledTitle>
+                  <ContactForm />
+                  <StyledTitle>Contacts</StyledTitle>
+                  <Filter />
+                  <ContactList />
+                </>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <PublicRoute>
+                <Register />
+              </PublicRoute>
+            }
+          />
 
-  const handleDelete = id => {
-    dispatch(deleteContactThunk(id));
-  };
-
-  const getFilteredContacts = () => {
-    const filterContactsList = contacts.filter(
-      contact =>
-        typeof contact.name === 'string' &&
-        contact.name.toLowerCase().includes(filter.toLowerCase())
-    );
-
-    return filterContactsList;
-  };
-
-  const filteredContacts = getFilteredContacts();
-
-  return (
-    <StyledContainer>
-      <StyledTitle>Phonebook</StyledTitle>
-      <ContactForm addContact={handleSubmit} />
-      <StyledTitle>Contacts</StyledTitle>
-      <Filter filter={filter} handleChange={handleChange} />
-      <ContactList contacts={filteredContacts} handleDelete={handleDelete} />
-      {loading && <h1>Loading...</h1>}
-      {error && <h1>{error}</h1>}
-    </StyledContainer>
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </StyledContainer>
+    </StyledContent>
   );
 };

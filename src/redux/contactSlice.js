@@ -4,6 +4,7 @@ import {
   deleteContactThunk,
   fetchContactsThunk,
 } from './operations';
+import { logoutThunk } from './auth/operations';
 
 const initialState = { value: [], isLoading: false, error: null };
 
@@ -16,6 +17,9 @@ const contactsSlice = createSlice({
       .addCase(fetchContactsThunk.fulfilled, (state, { payload }) => {
         state.value = payload;
         state.isLoading = false;
+      })
+      .addCase(logoutThunk.fulfilled, state => {
+        state.value = [];
       })
       .addCase(deleteContactThunk.fulfilled, (state, { payload }) => {
         state.value = state.value.filter(value => value.id !== payload.id);

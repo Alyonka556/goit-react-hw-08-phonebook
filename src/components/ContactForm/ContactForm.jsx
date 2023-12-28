@@ -7,27 +7,40 @@ import {
   StyledInput,
   StyledButton,
 } from './ContactForm.styled';
+import { getContacts } from '../../redux/selector';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContactsThunk } from '../../redux/operations';
 
-export const ContactForm = ({ addContact }) => {
+const ContactForm = () => {
+  const contacts = useSelector(getContacts);
+
+  const dispatch = useDispatch();
+
   const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [number, setNumber] = useState('');
 
   const handleChange = e => {
     const { name, value } = e.target;
     if (name === 'name') {
       setName(value);
-    } else if (name === 'phone') {
-      setPhone(value);
+    } else if (name === 'number') {
+      setNumber(value);
     }
   };
 
-  const handleSubmit = e => {
-    e.preventDefault();
+  const handleSubmit = event => {
+    event.preventDefault();
+    const name = event.target.elements.name.value;
+    const number = event.target.elements.number.value;
+    if (contacts.some(contact => contact.name === name)) {
+      alert(`${name} is already in contacts.`);
+      return;
+    }
 
-    addContact({ name, phone });
-
+    dispatch(addContactsThunk({ name, number }));
     setName('');
-    setPhone('');
+    setNumber('');
+    event.target.reset();
   };
 
   return (
@@ -45,10 +58,10 @@ export const ContactForm = ({ addContact }) => {
         <StyledLabel>Number </StyledLabel>
         <StyledInput
           type="tel"
-          name="phone"
+          name="number"
           required
           placeholder="Enter phone number"
-          value={phone}
+          value={number}
           onChange={handleChange}
         />
         <StyledButton type="submit">Add contact</StyledButton>
@@ -56,3 +69,5 @@ export const ContactForm = ({ addContact }) => {
     </StyledWrapper>
   );
 };
+
+export default ContactForm;
